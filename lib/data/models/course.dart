@@ -1,14 +1,19 @@
+import 'package:flutter/material.dart' show Key;
+
 import 'time_slot.dart';
 
 // A course's start and end times are expected to be in 24 hour format.
 class Course implements Comparable<Course> {
-  final TimeSlot time; // Period of time the course takes up.
-  final int credits; // Credits a course is worth.
-  final String name; // Course name.
+  final Key? key; // Unique identifier for a course
+  final TimeSlot? time; // Period of time the course takes up.
+  final int? credits; // Credits a course is worth.
+  final String? name; // Course name.
   final String? crn; // Code representing the course (often used to register).
-  final Set<int> days; // Days this course takes place on (Use DateTime consts).
+  final Set<int>?
+      days; // Days this course takes place on (Use DateTime consts).
 
   Course({
+    this.key,
     required this.name,
     required this.time,
     this.credits = 3, // Most courses (in US) are three credits.
@@ -24,15 +29,45 @@ class Course implements Comparable<Course> {
   /// Note when start compares to 0, the returned value is determined
   /// exclusively by the result of comparing end times.
   @override
-  int compareTo(Course other) => time.compareTo(other.time);
+  int compareTo(Course other) {
+    if (time != null && other.time != null) {
+      return time!.compareTo(other.time!);
+    }
+    throw NoCourseTimeException();
+  }
 
   /// Determines if this course's times overlap at ANY point with `other`'s
   ///
   /// Returns true if `other` starts or ends at any point in time BETWEEN
   /// when this starts and ends.
   /// Otherwise, returns false
-  bool conflictsWith(Course other) => time.conflictsWith(other.time);
+  bool conflictsWith(Course other) {
+    if (time != null && other.time != null) {
+      return time!.conflictsWith(other.time!);
+    }
+    throw NoCourseTimeException();
+  }
 
   @override
   String toString() => '${crn == null ? '' : '$crn: '}$name @ $time on $days';
+
+  Course copyWith({
+    Key? key,
+    TimeSlot? time,
+    int? credits,
+    String? name,
+    String? crn,
+    Set<int>? days,
+  }) {
+    return Course(
+      key: key ?? this.key,
+      time: time ?? this.time,
+      credits: credits ?? this.credits,
+      name: name ?? this.name,
+      crn: crn ?? this.crn,
+      days: days ?? this.days,
+    );
+  }
 }
+
+class NoCourseTimeException implements Exception {}

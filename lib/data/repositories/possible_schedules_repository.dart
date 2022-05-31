@@ -43,6 +43,6 @@ class PossibleSchedulesRepository {
   /// Get a list of all courses starting at or before a specified time
   List<Course> coursesAtOrBefore(DateTime time) => courses.sublist(
         0,
-        courses.lastIndexWhere((e) => time.compareTo(e.time.start) >= 0) + 1,
+        courses.lastIndexWhere((e) => time.compareTo(e.time!.start) >= 0) + 1,
       );
 }

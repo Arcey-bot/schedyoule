@@ -54,7 +54,7 @@ class Schedule implements Comparable<Schedule> {
     if (scheduledDays.isEmpty) return true;
 
     // Intersection of course.days and scheduledDays returns potential conflicts
-    for (final int day in scheduledDays.intersection(course.days)) {
+    for (final int day in scheduledDays.intersection(course.days!)) {
       // Check that the last course's timeslot doesn't conflict with `course`'s
       // timeslot
       if (schedule[day]!.last.conflictsWith(course)) return false;
@@ -67,15 +67,15 @@ class Schedule implements Comparable<Schedule> {
   /// This function will ALWAYS add a course and does NOT perform any checks
   /// with regard to the addition's validity.
   void addCourse(Course course) {
-    courseNames.add(course.name); // Save the course name for future ref
+    courseNames.add(course.name!); // Save the course name for future ref
     scheduledDays.addAll(
       // Add any new days to scheduledDays
-      scheduledDays.union(course.days),
+      scheduledDays.union(course.days!),
     );
 
-    totalCredits += course.credits;
+    totalCredits += course.credits!;
 
-    for (final int day in course.days) {
+    for (final int day in course.days!) {
       schedule[day]!.add(course);
     }
   }
@@ -135,7 +135,7 @@ class Schedule implements Comparable<Schedule> {
     if (courseNames.contains(c.name)) return null;
 
     // Intersection returns only possible conflict point between courses
-    for (final int day in scheduledDays.intersection(c.days)) {
+    for (final int day in scheduledDays.intersection(c.days!)) {
       if (schedule[day]!.last.conflictsWith(c)) return schedule[day]!.last;
     }
     return null;
@@ -156,9 +156,9 @@ class Schedule implements Comparable<Schedule> {
   void removeCourse(Course c) {
     // If remove is successful, course is in schedule and will be removed.
     if (courseNames.remove(c.name)) {
-      totalCredits -= c.credits;
+      totalCredits -= c.credits!;
 
-      for (final int day in c.days) {
+      for (final int day in c.days!) {
         schedule[day]!.remove(c);
       }
     }
