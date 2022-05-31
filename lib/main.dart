@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:schedyoule/views/course_list_view.dart';
+import 'package:schedyoule/views/home_view.dart';
 
 void main() {
-  runApp(const MaterialApp(home: CourseListView()));
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: HomeView(),
+    );
+  }
 }
