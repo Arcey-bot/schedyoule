@@ -4,9 +4,7 @@ import 'package:schedyoule/views/schedule_list_view.dart';
 import 'package:schedyoule/views/widgets/course_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// TODO: Centralize courses storage so course card can also access course
-// TODO: If default course generated, let card know to autoclear text on click
-// TODO: Add field to select latest starting time
+// TODO: Add field to select latest starting time before generation
 
 class CourseListView extends ConsumerWidget {
   const CourseListView({Key? key}) : super(key: key);

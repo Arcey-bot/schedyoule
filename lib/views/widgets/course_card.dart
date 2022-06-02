@@ -1,10 +1,10 @@
 import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/constants/en_strings.dart';
+import 'package:schedyoule/data/models/models.dart';
 import 'package:schedyoule/providers/providers.dart';
-
-import '../../data/models/course.dart';
 
 class CourseCard extends ConsumerStatefulWidget {
   final Course course;
@@ -14,14 +14,10 @@ class CourseCard extends ConsumerStatefulWidget {
   /// `course` is the course with modified attributes
   final Function(Course course)? onChanged;
 
-  /// Determines if card should have attributes cleared on first click
-  final bool placeholderContent;
-
   const CourseCard({
     Key? key,
     required this.course,
     this.onChanged,
-    this.placeholderContent = false,
   }) : super(key: key);
 
   @override
@@ -42,9 +38,9 @@ class _CourseCardState extends ConsumerState<CourseCard> {
       text: widget.course.credits.toString(),
     );
 
-    _clearNameOnTap = widget.placeholderContent;
-    _clearCreditOnTap = widget.placeholderContent;
-    _clearDaysOnTap = widget.placeholderContent;
+    _clearNameOnTap = widget.course.placeholder;
+    _clearCreditOnTap = widget.course.placeholder;
+    _clearDaysOnTap = widget.course.placeholder;
     super.initState();
   }
 
@@ -119,7 +115,14 @@ class _CourseCardState extends ConsumerState<CourseCard> {
         hintText: courseEntryCardCreditFieldHint,
       ),
       textAlign: TextAlign.center,
-      onChanged: (text) {},
+      onChanged: (text) {
+        ref.read(courseScheduleProvider.notifier).updateCourse(
+              widget.course.key!,
+              widget.course.copyWith(
+                credits: int.tryParse(text) ?? defaultCredits,
+              ),
+            );
+      },
       onTap: () {
         if (_clearCreditOnTap!) {
           _creditController.clear();
@@ -139,13 +142,141 @@ class _CourseCardState extends ConsumerState<CourseCard> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        TimeButton(time: startTime),
+        TimeButton(time: startTime, onChange: _onStartChange),
         const Text('-'),
-        TimeButton(time: endTime),
+        TimeButton(time: endTime, onChange: _onEndChange),
       ],
     );
   }
+
+  void _onStartChange(TimeOfDay time) {
+    ref.read(courseScheduleProvider.notifier).updateCourse(
+          widget.course.key!,
+          widget.course.copyWith(
+            time: TimeSlot(
+              start: DateTime(2022, 1, 1, time.hour, time.minute),
+              end: widget.course.time.end,
+            ),
+          ),
+        );
+  }
+
+  void _onEndChange(TimeOfDay time) {
+    ref.read(courseScheduleProvider.notifier).updateCourse(
+          widget.course.key!,
+          widget.course.copyWith(
+            time: TimeSlot(
+              start: widget.course.time.start,
+              end: DateTime(2022, 1, 1, time.hour, time.minute),
+            ),
+          ),
+        );
+  }
 }
+
+class TimeButton extends ConsumerWidget {
+  final TimeOfDay time;
+  final void Function(TimeOfDay)? onChange;
+
+  const TimeButton({
+    Key? key,
+    required this.time,
+    this.onChange,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return TextButton(
+      onPressed: () {
+        Navigator.of(context).push(
+          showPicker(
+            value: time,
+            onChange: (t) {
+              if (onChange != null) onChange!(t);
+            },
+          ),
+        );
+      },
+      child: Text(time.format(context)),
+    );
+  }
+}
+
+// class TimeButton extends ConsumerStatefulWidget {
+//   final TimeOfDay time;
+//   final void Function(TimeOfDay)? onChange;
+
+//   const TimeButton({
+//     Key? key,
+//     required this.time,
+//     this.onChange,
+//   }) : super(key: key);
+
+//   @override
+//   ConsumerState<ConsumerStatefulWidget> createState() => _TimeButtonState();
+// }
+
+// class _TimeButtonState extends ConsumerState<TimeButton> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return TextButton(
+//       onPressed: () {
+//         Navigator.of(context).push(
+//           showPicker(
+//             value: widget.time,
+//             onChange: (t) {
+//               if (widget.onChange != null) widget.onChange!(t);
+//             },
+//           ),
+//         );
+//       },
+//       child: Text(widget.time.format(context)),
+//     );
+//   }
+// }
+
+// class TimeButton extends StatefulWidget {
+//   final TimeOfDay time;
+//   final void Function(TimeOfDay)? onChange;
+
+//   const TimeButton({
+//     Key? key,
+//     required this.time,
+//     this.onChange,
+//   }) : super(key: key);
+
+//   @override
+//   State<TimeButton> createState() => _TimeButtonState();
+// }
+
+// class _TimeButtonState extends State<TimeButton> {
+//   late TimeOfDay time;
+
+//   @override
+//   void initState() {
+//     time = widget.time;
+//     super.initState();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return TextButton(
+//       onPressed: () {
+//         Navigator.of(context).push(
+//           showPicker(
+//             value: time,
+//             onChange: (t) {
+//               if (widget.onChange != null) widget.onChange!(t);
+//               setState(() => time = t);
+//             },
+//           ),
+//         );
+//       },
+//       child: Text(time.format(context)),
+//     );
+//   }
+// }
+
 
 // class CourseCard extends StatefulWidget {
 //   Course course;
@@ -264,44 +395,3 @@ class _CourseCardState extends ConsumerState<CourseCard> {
 //   }
 // }
 
-class TimeButton extends StatefulWidget {
-  final TimeOfDay time;
-  final void Function(TimeOfDay)? onChange;
-
-  const TimeButton({
-    Key? key,
-    required this.time,
-    this.onChange,
-  }) : super(key: key);
-
-  @override
-  State<TimeButton> createState() => _TimeButtonState();
-}
-
-class _TimeButtonState extends State<TimeButton> {
-  late TimeOfDay time;
-
-  @override
-  void initState() {
-    time = widget.time;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        Navigator.of(context).push(
-          showPicker(
-            value: time,
-            onChange: (t) {
-              if (widget.onChange != null) widget.onChange!(t);
-              setState(() => time = t);
-            },
-          ),
-        );
-      },
-      child: Text(time.format(context)),
-    );
-  }
-}
