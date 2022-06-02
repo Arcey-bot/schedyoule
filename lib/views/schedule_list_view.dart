@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../data/models/schedule.dart';
 
@@ -19,7 +18,8 @@ class ScheduleListView extends StatelessWidget {
         child: ListView.builder(
           itemCount: schedules.length,
           itemBuilder: (context, index) => Card(
-            child: Text('Schedule $index'),
+            child: Text(
+                'Schedule $index: ${schedules[index].totalCredits} Credits'),
           ),
         ),
       ),

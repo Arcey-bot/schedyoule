@@ -1,56 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:schedyoule/data/models/models.dart';
-import 'package:schedyoule/data/repositories/possible_schedules_repository.dart';
+import 'package:schedyoule/providers/providers.dart';
 import 'package:schedyoule/views/schedule_list_view.dart';
-import 'package:schedyoule/views/widgets/course_entry_card.dart';
+import 'package:schedyoule/views/widgets/course_card.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// TODO: Handle clicking generate when cards are missing data
+// TODO: Centralize courses storage so course card can also access course
+// TODO: If default course generated, let card know to autoclear text on click
+// TODO: Add field to select latest starting time
 
-class CourseListView extends StatefulWidget {
-  final List<Course> courses;
-
-  const CourseListView({Key? key, required this.courses}) : super(key: key);
+class CourseListView extends ConsumerWidget {
+  const CourseListView({Key? key}) : super(key: key);
 
   @override
-  State<CourseListView> createState() => _CourseListViewState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final provider = ref.watch(courseScheduleProvider);
 
-class _CourseListViewState extends State<CourseListView> {
-  @override
-  Widget build(BuildContext context) {
+    print('CourseListView: ${provider.courses}');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add your courses'),
         actions: [
           IconButton(
-            onPressed: () => generateSchedules(),
+            onPressed: () {
+              print(provider.courses);
+              generateSchedules(context);
+            },
             icon: const Icon(Icons.add),
           )
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async => await ref
+            .read(courseScheduleProvider.notifier)
+            .createDefaultCourse(),
         child: const Icon(Icons.add),
       ),
       body: ListView.builder(
-        itemCount: 3,
-        itemBuilder: (context, index) => const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: CourseEntryCard(),
+        itemCount: provider.courses.length,
+        itemBuilder: (context, index) => Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Dismissible(
+            key: provider.courses[index].key!,
+            onDismissed: (dir) async => await ref
+                .read(courseScheduleProvider.notifier)
+                .removeCourse(provider.courses[index]),
+            child: CourseCard(
+              course: provider.courses[index],
+              onChanged: (value) {},
+            ),
+          ),
         ),
       ),
     );
   }
 
-  void generateSchedules() async {
-    final poss = PossibleSchedulesRepository(
-        courses: widget.courses, latest: DateTime(2022, 1, 1, 9));
+  // void _onChanged(int index, String value) {
+  //   widget.courses[index] = widget.courses[index].copyWith(name: value);
+  // }
 
-    final schedules = await poss.generateSchedules();
+  void generateSchedules(BuildContext context) async {
+    // TODO: Prune bad courses before generating
+    // TODO: Call ViewModel or provider to run generation
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: ((context) => ScheduleListView(schedules: schedules)),
+        builder: ((context) => ScheduleListView(schedules: [])),
       ),
     );
   }

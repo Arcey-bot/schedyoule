@@ -1,25 +1,24 @@
-import 'package:flutter/material.dart' show Key;
+import 'package:flutter/material.dart' show Key, UniqueKey;
 
 import 'time_slot.dart';
 
 // A course's start and end times are expected to be in 24 hour format.
 class Course implements Comparable<Course> {
   final Key? key; // Unique identifier for a course
-  final TimeSlot? time; // Period of time the course takes up.
-  final int? credits; // Credits a course is worth.
-  final String? name; // Course name.
+  final TimeSlot time; // Period of time the course takes up.
+  final int credits; // Credits a course is worth.
+  final String name; // Course name.
   final String? crn; // Code representing the course (often used to register).
-  final Set<int>?
-      days; // Days this course takes place on (Use DateTime consts).
+  final Set<int> days; // Days this course takes place on (Use DateTime consts).
 
   Course({
-    this.key,
+    Key? key,
     required this.name,
     required this.time,
     this.credits = 3, // Most courses (in US) are three credits.
     this.crn,
     required this.days,
-  });
+  }) : key = key ?? UniqueKey(); // Create unique key if none is given
 
   /// Compares this to `other`
   ///
@@ -30,10 +29,7 @@ class Course implements Comparable<Course> {
   /// exclusively by the result of comparing end times.
   @override
   int compareTo(Course other) {
-    if (time != null && other.time != null) {
-      return time!.compareTo(other.time!);
-    }
-    throw NoCourseTimeException();
+    return time.compareTo(other.time);
   }
 
   /// Determines if this course's times overlap at ANY point with `other`'s
@@ -42,10 +38,7 @@ class Course implements Comparable<Course> {
   /// when this starts and ends.
   /// Otherwise, returns false
   bool conflictsWith(Course other) {
-    if (time != null && other.time != null) {
-      return time!.conflictsWith(other.time!);
-    }
-    throw NoCourseTimeException();
+    return time.conflictsWith(other.time);
   }
 
   @override
@@ -69,5 +62,3 @@ class Course implements Comparable<Course> {
     );
   }
 }
-
-class NoCourseTimeException implements Exception {}
