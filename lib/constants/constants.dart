@@ -14,4 +14,7 @@ Course defaultCourse = Course(
     DateTime.friday,
   },
   credits: 4,
+  placeholder: true,
 );
+
+const defaultCredits = 3;

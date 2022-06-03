@@ -6,6 +6,8 @@ import 'package:schedyoule/constants/en_strings.dart';
 import 'package:schedyoule/data/models/models.dart';
 import 'package:schedyoule/providers/providers.dart';
 
+// TODO: Highlight textfields red when empty
+
 class CourseCard extends ConsumerStatefulWidget {
   final Course course;
 
@@ -85,6 +87,7 @@ class _CourseCardState extends ConsumerState<CourseCard> {
   Widget buildNameField() {
     return TextField(
       decoration: const InputDecoration(
+        suffixIcon: Icon(Icons.edit),
         hintText: courseEntryCardNameFieldHint,
       ),
       controller: _nameController,
@@ -149,8 +152,8 @@ class _CourseCardState extends ConsumerState<CourseCard> {
     );
   }
 
-  void _onStartChange(TimeOfDay time) {
-    ref.read(courseScheduleProvider.notifier).updateCourse(
+  Future<void> _onStartChange(TimeOfDay time) async {
+    await ref.read(courseScheduleProvider.notifier).updateCourse(
           widget.course.key!,
           widget.course.copyWith(
             time: TimeSlot(
@@ -161,8 +164,8 @@ class _CourseCardState extends ConsumerState<CourseCard> {
         );
   }
 
-  void _onEndChange(TimeOfDay time) {
-    ref.read(courseScheduleProvider.notifier).updateCourse(
+  Future<void> _onEndChange(TimeOfDay time) async {
+    await ref.read(courseScheduleProvider.notifier).updateCourse(
           widget.course.key!,
           widget.course.copyWith(
             time: TimeSlot(

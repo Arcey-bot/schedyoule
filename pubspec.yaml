@@ -37,6 +37,7 @@ dependencies:
   intl: ^0.17.0
   day_night_time_picker: ^1.0.5
   flutter_riverpod: ^1.0.4
+  pluto_grid: ^3.1.2
 
 dev_dependencies:
   flutter_test:

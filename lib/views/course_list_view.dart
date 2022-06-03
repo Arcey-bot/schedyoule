@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:schedyoule/data/repositories/course_schedule_repository.dart';
 import 'package:schedyoule/providers/providers.dart';
 import 'package:schedyoule/views/schedule_list_view.dart';
 import 'package:schedyoule/views/widgets/course_card.dart';
@@ -19,12 +20,9 @@ class CourseListView extends ConsumerWidget {
         title: const Text('Add your courses'),
         actions: [
           IconButton(
-            onPressed: () {
-              print(provider.courses);
-              generateSchedules(context);
-            },
+            onPressed: () async => await _generateSchedules(context, ref),
             icon: const Icon(Icons.add),
-          )
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -52,18 +50,21 @@ class CourseListView extends ConsumerWidget {
     );
   }
 
-  // void _onChanged(int index, String value) {
-  //   widget.courses[index] = widget.courses[index].copyWith(name: value);
-  // }
-
-  void generateSchedules(BuildContext context) async {
-    // TODO: Prune bad courses before generating
-    // TODO: Call ViewModel or provider to run generation
+  Future<void> _generateSchedules(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final s =
+        await ref.read(courseScheduleProvider.notifier).generateSchedules();
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: ((context) => ScheduleListView(schedules: [])),
+        builder: ((context) => ScheduleListView(schedules: s)),
       ),
     );
   }
+
+  // void _onChanged(int index, String value) {
+  //   widget.courses[index] = widget.courses[index].copyWith(name: value);
+  // }
 }

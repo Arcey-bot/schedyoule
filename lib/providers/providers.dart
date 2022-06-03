@@ -9,6 +9,8 @@ final courseScheduleProvider =
   (ref) => CourseListViewModel(courses),
 );
 
+final validCourseListProvider = StateProvider<bool>((ref) => true);
+
 final courses = [
   Course(
     key: UniqueKey(),
@@ -17,8 +19,7 @@ final courses = [
         startHour: 10, startMinute: 0, endHour: 10, endMinute: 50),
     days: {
       DateTime.monday,
-      DateTime.tuesday,
-      DateTime.thursday,
+      DateTime.wednesday,
       DateTime.friday,
     },
     credits: 4,
@@ -29,10 +30,19 @@ final courses = [
     time: TimeSlot.fromInt(
         startHour: 9, startMinute: 0, endHour: 9, endMinute: 50),
     days: {
-      DateTime.monday,
       DateTime.tuesday,
       DateTime.thursday,
       DateTime.friday,
+    },
+  ),
+  Course(
+    key: UniqueKey(),
+    name: 'Bio',
+    time: TimeSlot.fromInt(
+        startHour: 8, startMinute: 0, endHour: 8, endMinute: 50),
+    days: {
+      DateTime.saturday,
+      DateTime.thursday,
     },
   ),
 ];

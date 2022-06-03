@@ -84,8 +84,10 @@ class Schedule implements Comparable<Schedule> {
   String toString() {
     final StringBuffer str = StringBuffer();
 
+    int spaces = 10;
     for (final int day in scheduledDays) {
-      str.write(numToDay(day));
+      final String d = numToDay(day);
+      str.write(d + ' ' * (10 - d.length));
       str.writeAll(schedule[day]!.where((element) => true), ' -> ');
       str.writeln();
     }
@@ -93,7 +95,7 @@ class Schedule implements Comparable<Schedule> {
     return str.toString();
   }
 
-  String numToDay(final int num) {
+  static String numToDay(final int num) {
     switch (num) {
       case DateTime.monday:
         return 'Monday';

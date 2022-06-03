@@ -10,6 +10,7 @@ class Course implements Comparable<Course> {
   final String name; // Course name.
   final String? crn; // Code representing the course (often used to register).
   final Set<int> days; // Days this course takes place on (Use DateTime consts).
+  bool? placeholder; // If the course contains user-created data
 
   Course({
     Key? key,
@@ -18,6 +19,7 @@ class Course implements Comparable<Course> {
     this.credits = 3, // Most courses (in US) are three credits.
     this.crn,
     required this.days,
+    this.placeholder = false,
   }) : key = key ?? UniqueKey(); // Create unique key if none is given
 
   /// Compares this to `other`
