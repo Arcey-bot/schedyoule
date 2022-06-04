@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:schedyoule/data/repositories/course_schedule_repository.dart';
 import 'package:schedyoule/providers/providers.dart';
 import 'package:schedyoule/views/schedule_list_view.dart';
 import 'package:schedyoule/views/widgets/course_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // TODO: Add field to select latest starting time before generation
+// TODO: Prevent generation if no courses are available
 
 class CourseListView extends ConsumerWidget {
   const CourseListView({Key? key}) : super(key: key);
@@ -14,7 +14,6 @@ class CourseListView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(courseScheduleProvider);
 
-    print('CourseListView: ${provider.courses}');
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add your courses'),
@@ -22,6 +21,11 @@ class CourseListView extends ConsumerWidget {
           IconButton(
             onPressed: () async => await _generateSchedules(context, ref),
             icon: const Icon(Icons.add),
+          ),
+          IconButton(
+            onPressed: () =>
+                print('${provider.courses.length} - ${provider.courses}'),
+            icon: const Icon(Icons.refresh),
           ),
         ],
       ),
@@ -36,7 +40,7 @@ class CourseListView extends ConsumerWidget {
         itemBuilder: (context, index) => Padding(
           padding: const EdgeInsets.all(8.0),
           child: Dismissible(
-            key: provider.courses[index].key!,
+            key: UniqueKey(),
             onDismissed: (dir) async => await ref
                 .read(courseScheduleProvider.notifier)
                 .removeCourse(provider.courses[index]),
