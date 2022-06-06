@@ -5,7 +5,6 @@ import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
 import 'package:schedyoule/data/repositories/course_schedule_repository.dart';
 
-// TODO: Logging
 class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
   CourseListViewModel([List<Course>? courses, DateTime? latest])
       : super(CourseScheduleRepository(
@@ -56,12 +55,15 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
   ///
   /// Will attempt to maximize amount of courses taken in a schedule.
   Future<List<Schedule>> generateSchedules() async {
+    final List<Course> courses = List.of(state.courses);
     courses.sort();
 
     final List<Schedule> possibleSchedules = [
       for (Course c in coursesAtOrBefore(state.latest!))
         Schedule()..addCourse(c)
     ];
+
+    // TODO: Ensure that if a course is the first course added for a day, that it is not after latest
 
     /// Offset is index + 1 of the only existing course in a schedule at the
     /// same index in `possibleSchedules`. For example, if a Course named Bio

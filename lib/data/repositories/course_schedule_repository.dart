@@ -37,7 +37,6 @@ class CourseScheduleRepository {
   /// Returns true if the course was deleted,
   /// Returns false if it could not be deleted (not in the list)
   Future<bool> removeCourse(Course course) async {
-    final List<Course> newCourses = List.from(courses);
     return courses.remove(course);
   }
 
