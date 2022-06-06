@@ -42,21 +42,15 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     state = state.copyWith(courses: newCourses);
   }
 
-  Future<void> setLatest(TimeOfDay latest) async {
-    print(state.latest);
-    print('');
-
-    state = state.copyWith(
-      latest: DateTime(
-        2022,
-        1,
-        1,
-        latest.hour,
-        latest.minute,
-      ),
-    );
-    print(state.latest);
-  }
+  Future<void> setLatest(TimeOfDay latest) async => state = state.copyWith(
+        latest: DateTime(
+          2022,
+          1,
+          1,
+          latest.hour,
+          latest.minute,
+        ),
+      );
 
   /// Generate a number of possible schedules given a list of courses
   ///
