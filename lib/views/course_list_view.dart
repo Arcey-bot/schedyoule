@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:schedyoule/constants/constants.dart';
+import 'package:schedyoule/constants/en_strings.dart';
+import 'package:schedyoule/data/repositories/course_schedule_repository.dart';
 import 'package:schedyoule/providers/providers.dart';
 import 'package:schedyoule/views/schedule_list_view.dart';
 import 'package:schedyoule/views/widgets/course_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:schedyoule/views/widgets/time_button.dart';
 
 // TODO: Add field to select latest starting time before generation
+// TODO: Sort courses for schedule generation using a clone of the course list to avoid reshuffling when popping back to courseListView
 // TODO: Prevent generation if no courses are available
+// TODO: Disable generate button when generating
+// TODO: Add limit to number of courses that can be created?
 
 class CourseListView extends ConsumerWidget {
   const CourseListView({Key? key}) : super(key: key);
@@ -19,12 +26,8 @@ class CourseListView extends ConsumerWidget {
         title: const Text('Add your courses'),
         actions: [
           IconButton(
-            onPressed: () async => await _generateSchedules(context, ref),
-            icon: const Icon(Icons.add),
-          ),
-          IconButton(
-            onPressed: () =>
-                print('${provider.courses.length} - ${provider.courses}'),
+            onPressed: () => print(
+                '${provider.latest} - ${provider.courses.length} - ${provider.courses}'),
             icon: const Icon(Icons.refresh),
           ),
         ],
@@ -35,20 +38,54 @@ class CourseListView extends ConsumerWidget {
             .createDefaultCourse(),
         child: const Icon(Icons.add),
       ),
-      body: ListView.builder(
-        itemCount: provider.courses.length,
-        itemBuilder: (context, index) => Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Dismissible(
-            key: UniqueKey(),
-            onDismissed: (dir) async => await ref
-                .read(courseScheduleProvider.notifier)
-                .removeCourse(provider.courses[index]),
-            child: CourseCard(
-              course: provider.courses[index],
-              onChanged: (value) {},
-            ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            buildFunctionalityHeader(context, ref),
+            const Divider(height: 4),
+            Expanded(child: buildCourseCardList(provider, ref)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Row buildFunctionalityHeader(BuildContext context, WidgetRef ref) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 7,
+          child: ElevatedButton(
+            onPressed: () async => await _generateSchedules(context, ref),
+            child: const Text(courseListViewGenerateButton),
           ),
+        ),
+        const SizedBox(width: 16),
+        TimeButton(
+          time: defaultLatest,
+          onChange: (time) async {
+            await ref.read(courseScheduleProvider.notifier).setLatest(time);
+          },
+        ),
+      ],
+    );
+  }
+
+  ListView buildCourseCardList(
+    CourseScheduleRepository provider,
+    WidgetRef ref,
+  ) {
+    return ListView.separated(
+      itemCount: provider.courses.length,
+      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      itemBuilder: (context, index) => Dismissible(
+        key: UniqueKey(),
+        onDismissed: (dir) async => await ref
+            .read(courseScheduleProvider.notifier)
+            .removeCourse(provider.courses[index]),
+        child: CourseCard(
+          course: provider.courses[index],
         ),
       ),
     );
@@ -67,8 +104,4 @@ class CourseListView extends ConsumerWidget {
       ),
     );
   }
-
-  // void _onChanged(int index, String value) {
-  //   widget.courses[index] = widget.courses[index].copyWith(name: value);
-  // }
 }

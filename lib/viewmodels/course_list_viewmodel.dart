@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart' show Key;
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
@@ -41,8 +42,21 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     state = state.copyWith(courses: newCourses);
   }
 
-  Future<void> setLatest(DateTime latest) async =>
-      state = state.copyWith(latest: latest);
+  Future<void> setLatest(TimeOfDay latest) async {
+    print(state.latest);
+    print('');
+
+    state = state.copyWith(
+      latest: DateTime(
+        2022,
+        1,
+        1,
+        latest.hour,
+        latest.minute,
+      ),
+    );
+    print(state.latest);
+  }
 
   /// Generate a number of possible schedules given a list of courses
   ///

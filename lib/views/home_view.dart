@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:schedyoule/data/models/models.dart';
 import 'package:schedyoule/views/course_list_view.dart';
 
 class HomeView extends StatelessWidget {
@@ -7,6 +6,6 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CourseListView();
+    return const CourseListView();
   }
 }

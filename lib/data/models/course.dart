@@ -43,6 +43,14 @@ class Course implements Comparable<Course> {
     return time.conflictsWith(other.time);
   }
 
+  void addDay(int day) {
+    days.add(day);
+  }
+
+  void removeDay(int day) {
+    days.remove(day);
+  }
+
   @override
   String toString() => '${crn == null ? '' : '$crn: '}$name @ $time on $days';
 

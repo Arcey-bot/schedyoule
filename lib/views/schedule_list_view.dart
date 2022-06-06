@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pluto_grid/pluto_grid.dart';
 import 'package:schedyoule/data/models/models.dart';
-
-import '../data/models/schedule.dart';
 
 class ScheduleListView extends StatelessWidget {
   final List<Schedule> schedules;
@@ -22,12 +19,162 @@ class ScheduleListView extends StatelessWidget {
               title: Text(
                 'Schedule $index (${schedules[index].totalCredits} Credits )',
               ),
+              initiallyExpanded: index < 2, // Let first 2 start open
               childrenPadding: const EdgeInsets.all(8),
               children: [ScheduleBlock(schedule: schedules[index])],
             ),
           );
         },
       ),
+    );
+  }
+}
+
+class ScheduleBlock2 extends StatelessWidget {
+  final Schedule schedule;
+
+  const ScheduleBlock2({Key? key, required this.schedule}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final ScrollController _controller = ScrollController();
+
+    return ListView.separated(
+      shrinkWrap: true,
+      itemBuilder: (context, index) => DaySchedule(
+        day: schedule.scheduledDays.elementAt(index),
+        schedule: schedule,
+        controller: _controller,
+      ),
+      separatorBuilder: (context, index) => const Divider(),
+      itemCount: schedule.scheduledDays.length,
+    );
+  }
+}
+
+class DaySchedule extends StatelessWidget {
+  final int day;
+  final Schedule schedule;
+  final ScrollController controller;
+
+  const DaySchedule({
+    Key? key,
+    required this.day,
+    required this.schedule,
+    required this.controller,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Flexible(flex: 2, child: buildTitleCard(Schedule.numToDay(day))),
+        Expanded(
+          child: SingleChildScrollView(
+            controller: controller,
+            scrollDirection: Axis.horizontal,
+            child: buildCourseDayList(schedule.schedule[day]!),
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget buildTitleCard(String text) {
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.all(8),
+      color: Colors.teal.shade100,
+      child: Text(text),
+    );
+  }
+
+  Widget buildCourseDayList(List<Course> courses) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final Course c in courses)
+          Container(
+            color: Colors.pink.shade50,
+            child: Column(
+              children: [
+                Text(c.name),
+                Text(c.time.toString()),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class ScheduleBlockSliver extends StatelessWidget {
+  final Schedule schedule;
+
+  const ScheduleBlockSliver({Key? key, required this.schedule})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (final day in schedule.scheduledDays)
+              buildTitleCard(
+                Schedule.numToDay(day),
+              ),
+          ],
+        ),
+        const SizedBox(width: 4.0),
+        Expanded(
+          child: CustomScrollView(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            slivers: [
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => buildCourseDayList(schedule
+                      .schedule[schedule.scheduledDays.elementAt(index)]!),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget buildTitleCard(String text) {
+    return Card(
+      elevation: 2,
+      margin: const EdgeInsets.all(8),
+      color: Colors.teal.shade100,
+      child: Text(text),
+    );
+  }
+
+  Widget buildCourseDayList(List<Course> courses) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final Course c in courses)
+          Container(
+            color: Colors.pink.shade50,
+            child: Column(
+              children: [
+                Text(c.name),
+                Text(c.time.toString()),
+              ],
+            ),
+          ),
+      ],
     );
   }
 }
@@ -43,7 +190,7 @@ class ScheduleBlock extends StatelessWidget {
       children: [
         Column(
           mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             for (final day in schedule.scheduledDays)
@@ -52,6 +199,7 @@ class ScheduleBlock extends StatelessWidget {
               ),
           ],
         ),
+        const SizedBox(width: 4.0),
         Expanded(
           child: Container(
             color: Colors.grey.shade300,
@@ -61,7 +209,7 @@ class ScheduleBlock extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   for (final day in schedule.scheduledDays)
-                    buildCourseDayList(schedule.schedule[day]!)
+                    buildCourseDayList(schedule.schedule[day]!),
                 ],
               ),
             ),
@@ -86,7 +234,15 @@ class ScheduleBlock extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (final Course c in courses)
-          SizedBox(child: buildTitleCard('${c.name} (${c.time})'))
+          Container(
+            color: Colors.pink.shade50,
+            child: Column(
+              children: [
+                Text(c.name),
+                Text(c.time.toString()),
+              ],
+            ),
+          ),
       ],
     );
   }

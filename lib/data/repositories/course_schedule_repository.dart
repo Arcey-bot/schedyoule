@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:schedyoule/constants/constants.dart';
 
 import 'package:schedyoule/data/models/models.dart';
 
@@ -21,10 +22,11 @@ class CourseScheduleRepository {
 
   final List<Course> courses;
 
-  CourseScheduleRepository({required this.courses, DateTime? latest});
+  CourseScheduleRepository({required this.courses, DateTime? latest})
+      : latest = latest ?? defaultLatestDateTime;
 
   // The latest time a schedule can start at (Default is 10am)
-  DateTime? latest = DateTime(2022, 1, 1, 10);
+  DateTime? latest = defaultLatestDateTime;
 
   Future<void> addCourse(Course course) async {
     courses.add(course);

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:schedyoule/data/models/models.dart';
 
 Course defaultCourse = Course(
@@ -17,4 +18,13 @@ Course defaultCourse = Course(
   placeholder: true,
 );
 
+final DateTime defaultLatestDateTime = DateTime(
+  2022,
+  1,
+  1,
+  defaultLatest.hour,
+  defaultLatest.minute,
+);
+
 const defaultCredits = 3;
+const TimeOfDay defaultLatest = TimeOfDay(hour: 9, minute: 0);
