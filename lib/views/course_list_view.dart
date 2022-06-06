@@ -8,7 +8,6 @@ import 'package:schedyoule/views/widgets/course_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schedyoule/views/widgets/time_button.dart';
 
-// TODO: Add field to select latest starting time before generation
 // TODO: Sort courses for schedule generation using a clone of the course list to avoid reshuffling when popping back to courseListView
 // TODO: Prevent generation if no courses are available
 // TODO: Disable generate button when generating
