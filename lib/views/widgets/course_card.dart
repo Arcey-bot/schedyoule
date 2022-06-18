@@ -21,6 +21,7 @@ class CourseCard extends ConsumerStatefulWidget {
 }
 
 class _CourseCardState extends ConsumerState<CourseCard> {
+  late FocusNode _nameFocus;
   late final TextEditingController _nameController;
   late final TextEditingController _creditController;
   bool? _clearNameOnTap;
@@ -28,6 +29,7 @@ class _CourseCardState extends ConsumerState<CourseCard> {
 
   @override
   void initState() {
+    _nameFocus = FocusNode();
     _nameController = TextEditingController(text: widget.course.name);
     _creditController = TextEditingController(
       text: widget.course.credits.toString(),
@@ -40,6 +42,7 @@ class _CourseCardState extends ConsumerState<CourseCard> {
 
   @override
   void dispose() {
+    _nameFocus.dispose();
     _nameController.dispose();
     _creditController.dispose();
     super.dispose();
@@ -47,6 +50,7 @@ class _CourseCardState extends ConsumerState<CourseCard> {
 
   @override
   Widget build(BuildContext context) {
+    print('Card ${widget.course.name}: Name ${_nameFocus.hasFocus}');
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -55,8 +59,9 @@ class _CourseCardState extends ConsumerState<CourseCard> {
           children: [
             Row(
               children: [
-                Flexible(flex: 7, child: buildNameField()),
+                Flexible(flex: 6, child: buildNameField()),
                 const SizedBox(width: 36),
+                Text('Credits:'),
                 Flexible(flex: 1, child: buildCreditField()),
               ],
             ),
@@ -106,53 +111,64 @@ class _CourseCardState extends ConsumerState<CourseCard> {
   }
 
   Widget buildNameField() {
-    return TextField(
-      decoration: const InputDecoration(
-        suffixIcon: Icon(Icons.edit),
-        hintText: courseEntryCardNameFieldHint,
-      ),
-      controller: _nameController,
-      style: const TextStyle(
-        fontWeight: FontWeight.w900,
-        fontSize: 18.0, // Default is 14
-      ),
-      onChanged: (text) {
-        ref.read(courseScheduleProvider.notifier).updateCourse(
-              widget.course.key!,
-              widget.course.copyWith(name: text),
-            );
-      },
-      onTap: () {
-        if (_clearNameOnTap!) {
-          _nameController.clear();
-          _clearNameOnTap = false;
+    return Focus(
+      onFocusChange: (v) {
+        // Only updates card when it is no longer selected by the user
+        if (!v) {
+          ref.read(courseScheduleProvider.notifier).updateCourse(
+                widget.course.key!,
+                widget.course.copyWith(name: _nameController.text),
+              );
         }
       },
+      child: TextField(
+        decoration: const InputDecoration(
+          suffixIcon: Icon(Icons.edit),
+          hintText: courseEntryCardNameFieldHint,
+        ),
+        controller: _nameController,
+        style: const TextStyle(
+          fontWeight: FontWeight.w900,
+          fontSize: 18.0, // Default is 14
+        ),
+        onTap: () {
+          if (_clearNameOnTap!) {
+            _nameController.clear();
+            _clearNameOnTap = false;
+          }
+        },
+      ),
     );
   }
 
   Widget buildCreditField() {
-    return TextField(
-      keyboardType: TextInputType.number,
-      controller: _creditController,
-      decoration: const InputDecoration(
-        hintText: courseEntryCardCreditFieldHint,
-      ),
-      textAlign: TextAlign.center,
-      onChanged: (text) {
-        ref.read(courseScheduleProvider.notifier).updateCourse(
-              widget.course.key!,
-              widget.course.copyWith(
-                credits: int.tryParse(text) ?? defaultCredits,
-              ),
-            );
-      },
-      onTap: () {
-        if (_clearCreditOnTap!) {
-          _creditController.clear();
-          _clearCreditOnTap = false;
+    return Focus(
+      onFocusChange: (v) {
+        // Only updates card when it is no longer selected by the user
+        if (!v) {
+          ref.read(courseScheduleProvider.notifier).updateCourse(
+                widget.course.key!,
+                widget.course.copyWith(
+                  credits:
+                      int.tryParse(_creditController.text) ?? defaultCredits,
+                ),
+              );
         }
       },
+      child: TextField(
+        keyboardType: TextInputType.number,
+        controller: _creditController,
+        decoration: const InputDecoration(
+          hintText: courseEntryCardCreditFieldHint,
+        ),
+        textAlign: TextAlign.center,
+        onTap: () {
+          if (_clearCreditOnTap!) {
+            _creditController.clear();
+            _clearCreditOnTap = false;
+          }
+        },
+      ),
     );
   }
 
