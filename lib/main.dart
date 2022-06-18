@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schedyoule/views/home_view.dart';
 
-import 'data/models/models.dart';
-
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
