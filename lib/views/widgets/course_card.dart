@@ -7,7 +7,6 @@ import 'package:schedyoule/providers/providers.dart';
 import 'package:schedyoule/views/widgets/bubble_day_picker.dart';
 import 'package:schedyoule/views/widgets/time_button.dart';
 
-// TODO: Highlight textfields red when empty
 class CourseCard extends ConsumerStatefulWidget {
   final Course course;
 
@@ -57,7 +56,7 @@ class _CourseCardState extends ConsumerState<CourseCard> {
               children: [
                 Flexible(flex: 6, child: buildNameField()),
                 const SizedBox(width: 36),
-                Text('Credits:'),
+                const Text('Credits:'),
                 Flexible(flex: 1, child: buildCreditField()),
               ],
             ),
@@ -118,9 +117,12 @@ class _CourseCardState extends ConsumerState<CourseCard> {
         }
       },
       child: TextField(
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           suffixIcon: Icon(Icons.edit),
           hintText: courseEntryCardNameFieldHint,
+          hintStyle: _nameController.text.isEmpty
+              ? TextStyle(color: Colors.red.shade400)
+              : null,
         ),
         controller: _nameController,
         style: const TextStyle(
