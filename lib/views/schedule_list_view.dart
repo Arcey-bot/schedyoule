@@ -1,30 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
 
-class ScheduleListView extends StatelessWidget {
+class ScheduleListView extends ConsumerWidget {
   final List<Schedule> schedules;
   const ScheduleListView({Key? key, required this.schedules}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Schedules'),
       ),
-      body: ListView.builder(
-        itemCount: schedules.length,
-        itemBuilder: (context, index) {
-          return Card(
-            child: ExpansionTile(
-              title: Text(
-                'Schedule $index (${schedules[index].totalCredits} Credits )',
-              ),
-              initiallyExpanded: index < 2, // Let first 2 start open
-              childrenPadding: const EdgeInsets.all(8),
-              children: [ScheduleBlock(schedule: schedules[index])],
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text('Generated ${schedules.length} schedules'),
+          ),
+          Divider(thickness: 4),
+          Expanded(
+            child: ListView.builder(
+              itemCount: schedules.length,
+              itemBuilder: (context, index) {
+                return Card(
+                  child: ExpansionTile(
+                    title: Text(
+                      'Schedule ${index + 1} (${schedules[index].totalCredits} Credits )',
+                    ),
+                    initiallyExpanded: index < numSchedulesStartExpaneded,
+                    childrenPadding: const EdgeInsets.all(8),
+                    children: [ScheduleBlock(schedule: schedules[index])],
+                  ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
