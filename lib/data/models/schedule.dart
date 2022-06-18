@@ -87,7 +87,7 @@ class Schedule implements Comparable<Schedule> {
     int spaces = 10;
     for (final int day in scheduledDays) {
       final String d = numToDay(day);
-      str.write(d + ' ' * (10 - d.length));
+      str.write(d + ' ' * (spaces - d.length));
       str.writeAll(schedule[day]!.where((element) => true), ' -> ');
       str.writeln();
     }
