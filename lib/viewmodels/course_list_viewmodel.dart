@@ -55,15 +55,21 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
   ///
   /// Will attempt to maximize amount of courses taken in a schedule.
   Future<List<Schedule>> generateSchedules() async {
+    final start = DateTime.now();
+
     final List<Course> courses = List.of(state.courses);
     courses.sort();
 
-    final List<Schedule> possibleSchedules = [
-      for (Course c in coursesAtOrBefore(state.latest!))
-        Schedule()..addCourse(c)
-    ];
-
     // TODO: Ensure that if a course is the first course added for a day, that it is not after latest
+    // final List<Schedule> possibleSchedules = [
+    //   for (Course c in coursesAtOrBefore(state.latest!))
+    //     Schedule()..addCourse(c)
+    // ];
+
+    // EVERY course can be a possible first course technically!
+    final List<Schedule> possibleSchedules = [
+      for (final Course c in courses) Schedule()..addCourse(c)
+    ];
 
     /// Offset is index + 1 of the only existing course in a schedule at the
     /// same index in `possibleSchedules`. For example, if a Course named Bio
@@ -88,6 +94,9 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
       // Ensure courses that couldn't be starting courses will all be tested.
       if (offset <= possibleSchedules.length) offset++;
     }
+
+    final end = DateTime.now();
+    print('Time to generate: ${end.difference(start)}');
 
     return possibleSchedules;
   }
