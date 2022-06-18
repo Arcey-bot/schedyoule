@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
 import 'package:schedyoule/data/repositories/course_schedule_repository.dart';
 import 'package:schedyoule/viewmodels/course_list_viewmodel.dart';
@@ -9,7 +10,8 @@ final courseScheduleProvider =
   (ref) => CourseListViewModel(courses),
 );
 
-final validCourseListProvider = StateProvider<bool>((ref) => true);
+final generateStateProvider =
+    StateProvider<GenerateButtonState>((ref) => GenerateButtonState.ready);
 
 final courses = [
   Course(
