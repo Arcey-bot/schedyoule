@@ -21,7 +21,6 @@ class CourseCard extends ConsumerStatefulWidget {
 }
 
 class _CourseCardState extends ConsumerState<CourseCard> {
-  late FocusNode _nameFocus;
   late final TextEditingController _nameController;
   late final TextEditingController _creditController;
   bool? _clearNameOnTap;
@@ -29,7 +28,6 @@ class _CourseCardState extends ConsumerState<CourseCard> {
 
   @override
   void initState() {
-    _nameFocus = FocusNode();
     _nameController = TextEditingController(text: widget.course.name);
     _creditController = TextEditingController(
       text: widget.course.credits.toString(),
@@ -42,7 +40,6 @@ class _CourseCardState extends ConsumerState<CourseCard> {
 
   @override
   void dispose() {
-    _nameFocus.dispose();
     _nameController.dispose();
     _creditController.dispose();
     super.dispose();
@@ -50,7 +47,6 @@ class _CourseCardState extends ConsumerState<CourseCard> {
 
   @override
   Widget build(BuildContext context) {
-    print('Card ${widget.course.name}: Name ${_nameFocus.hasFocus}');
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
