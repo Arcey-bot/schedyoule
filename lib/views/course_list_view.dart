@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/constants/en_strings.dart';
@@ -9,10 +7,6 @@ import 'package:schedyoule/views/schedule_list_view.dart';
 import 'package:schedyoule/views/widgets/course_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schedyoule/views/widgets/generate_schedules_button.dart';
-
-// TODO: Prevent generation if no courses are available
-// TODO: Add limit to number of courses that can be created?
-// TODO: Autofill empty course names if no-name course is passed to generation
 
 class CourseListView extends ConsumerWidget {
   const CourseListView({Key? key}) : super(key: key);
