@@ -43,19 +43,17 @@ class GenerateSchedulesButton extends ConsumerWidget {
     );
   }
 
-  Widget _buildGeneratingButton() => GradientButton();
+  Widget _buildGeneratingButton() => const GradientButton();
 }
 
 class GradientButton extends StatelessWidget {
-  GradientButton({Key? key}) : super(key: key);
-  final GlobalKey _key = GlobalKey();
+  const GradientButton({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
 
     return Stack(
-      key: _key,
       alignment: AlignmentDirectional.bottomStart,
       fit: StackFit.loose,
       children: [
