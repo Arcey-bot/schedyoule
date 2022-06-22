@@ -59,7 +59,7 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     final List<Course> courses = List.of(state.courses);
     courses.sort();
 
-    // TODO: Ensure that if a course is the first course added for a day, that it is not after latest
+    // Ensure that if a course is the first course added for a day, that it is not after latest
     // final List<Schedule> possibleSchedules = [
     //   for (Course c in coursesAtOrBefore(state.latest!))
     //     Schedule()..addCourse(c)

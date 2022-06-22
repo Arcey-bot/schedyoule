@@ -11,7 +11,7 @@ final courseScheduleProvider =
 );
 
 final generateStateProvider =
-    StateProvider<GenerateButtonState>((ref) => GenerateButtonState.ready);
+    StateProvider<GenerateButtonState>((ref) => GenerateButtonState.generating);
 
 final courses = [
   Course(

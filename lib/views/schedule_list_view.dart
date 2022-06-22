@@ -19,7 +19,7 @@ class ScheduleListView extends ConsumerWidget {
             padding: const EdgeInsets.only(top: 8.0),
             child: Text('Generated ${schedules.length} schedules'),
           ),
-          Divider(thickness: 4),
+          const Divider(thickness: 4),
           Expanded(
             child: ListView.builder(
               itemCount: schedules.length,

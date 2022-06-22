@@ -5,6 +5,7 @@ import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
 
 @immutable
+// ignore: must_be_immutable
 class CourseScheduleRepository {
   // static late final CourseScheduleRepository? _instance;
 

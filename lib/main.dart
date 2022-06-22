@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schedyoule/views/home_view.dart';
 
+// TODO: Tips screen or something idk
+
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }

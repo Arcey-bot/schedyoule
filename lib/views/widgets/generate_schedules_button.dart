@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:simple_animations/simple_animations.dart';
 
 import '../../constants/constants.dart';
 import '../../providers/providers.dart';
@@ -42,11 +43,80 @@ class GenerateSchedulesButton extends ConsumerWidget {
     );
   }
 
-  Widget _buildGeneratingButton() {
-    return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(primary: Colors.red),
-      child: Text(courseListViewGenerateButtonGenerating),
+  Widget _buildGeneratingButton() => GradientButton();
+}
+
+class GradientButton extends StatelessWidget {
+  GradientButton({Key? key}) : super(key: key);
+  final GlobalKey _key = GlobalKey();
+
+  @override
+  Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
+
+    // return ElevatedButton(
+    //   key: _key,
+    //   onPressed: () {
+    //     print(context.size);
+    //   },
+    //   child: Stack(
+    //     alignment: AlignmentDirectional.center,
+    //     fit: StackFit.passthrough,
+    //     children: [
+    //       const Text(courseListViewGenerateButtonGenerating),
+    //       Align(
+    //         alignment: AlignmentDirectional.bottomStart,
+    //         child: MirrorAnimation<double>(
+    //           builder: (context, child, value) {
+    //             return Transform.translate(
+    //                 offset: Offset(value, 0), child: child);
+    //           },
+    //           tween: Tween(begin: -width * 0.25, end: width),
+    //           duration: const Duration(milliseconds: generateAnimationDuration),
+    //           curve: Curves.easeInOut,
+    //           child: FittedBox(
+    //             fit: BoxFit.fitHeight,
+    //             child: Container(
+    //               color: Colors.white.withOpacity(0.3), // use animated value
+    //               width: 60,
+    //               height: 60,
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
+
+    return Stack(
+      key: _key,
+      alignment: AlignmentDirectional.bottomStart,
+      fit: StackFit.loose,
+      children: [
+        SizedBox(
+          width: double.maxFinite,
+          child: ElevatedButton(
+            onPressed: () {
+              print(_key.currentContext?.size);
+            },
+            child: const Text(courseListViewGenerateButtonGenerating),
+          ),
+        ),
+        MirrorAnimation<double>(
+          builder: (context, child, value) {
+            return Transform.translate(offset: Offset(value, 0), child: child);
+          },
+          tween: Tween(begin: -width * generateAnimationOffset, end: width),
+          duration: const Duration(milliseconds: generateAnimationDuration),
+          curve: Curves.easeInOut,
+          child: FractionallySizedBox(
+            widthFactor: generateAnimationSize,
+            child: Container(
+              color: Colors.white.withOpacity(generateAnimationOpacity),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

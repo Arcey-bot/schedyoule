@@ -42,9 +42,9 @@ class CourseListView extends ConsumerWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            buildFunctionalityHeader(context, ref),
+            Flexible(flex: 1, child: buildFunctionalityHeader(context, ref)),
             const Divider(height: 4),
-            Expanded(child: buildCourseCardList(provider, ref)),
+            Expanded(flex: 12, child: buildCourseCardList(provider, ref)),
           ],
         ),
       ),

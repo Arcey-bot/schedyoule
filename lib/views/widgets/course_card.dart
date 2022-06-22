@@ -118,7 +118,7 @@ class _CourseCardState extends ConsumerState<CourseCard> {
       },
       child: TextField(
         decoration: InputDecoration(
-          suffixIcon: Icon(Icons.edit),
+          suffixIcon: const Icon(Icons.edit),
           hintText: courseEntryCardNameFieldHint,
           hintStyle: _nameController.text.isEmpty
               ? TextStyle(color: Colors.red.shade400)
