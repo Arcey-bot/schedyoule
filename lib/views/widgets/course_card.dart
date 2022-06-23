@@ -63,6 +63,7 @@ class _CourseCardState extends ConsumerState<CourseCard> {
             const Divider(color: Colors.grey, height: 4.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Expanded(
                   child: BubbleDayPicker(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:simple_animations/simple_animations.dart';
 
 // TODO: Animate between enabled/disabled state
 
@@ -66,41 +68,188 @@ class Bubble extends StatefulWidget {
   State<Bubble> createState() => _BubbleState();
 }
 
-class _BubbleState extends State<Bubble> {
+class _BubbleState extends State<Bubble> with TickerProviderStateMixin {
+  late final AnimationController _animController;
   late bool enabled;
 
   @override
   void initState() {
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
     enabled = widget.initiallyEnabled!;
+    if (enabled) _animController.forward();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       customBorder: const CircleBorder(),
-      child: Container(
-        padding: const EdgeInsets.all(4),
-        decoration: enabled
-            ? BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.blue),
-              )
-            : null,
-        child: Center(
-          child: Text(
-            numToDay(widget.value),
-            style: TextStyle(color: enabled ? Colors.blue : null),
+      onTap: () {
+        setState(() {
+          enabled = !enabled;
+        });
+        if (widget.onTap != null) widget.onTap!(widget.value, enabled);
+        // _animController.forward();
+      },
+      child: Stack(
+        alignment: AlignmentDirectional.center,
+        children: [
+          buildDisabledBubble(),
+          AnimatedSwitcher(
+            duration: Duration(milliseconds: 250),
+            transitionBuilder: (child, anim) => ScaleTransition(
+              scale: _animController,
+              child: child,
+            ),
+            child: buildBubble(),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildBubble() {
+    return (enabled) ? buildEnabledBubble() : buildDisabledBubble();
+  }
+
+  Widget buildDisabledBubble() {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      child: Center(
+        child: Text(
+          numToDay(widget.value),
         ),
       ),
-      onTap: () {
-        setState(() => enabled = !enabled);
-        if (widget.onTap != null) widget.onTap!(widget.value, enabled);
-      },
+    );
+  }
+
+  Widget buildEnabledBubble() {
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.blue),
+      ),
+      child: Center(
+        child: Text(
+          numToDay(widget.value),
+          style: const TextStyle(color: Colors.blue),
+        ),
+      ),
+    );
+  }
+
+  Widget buildAnimatedBubble() {
+    return ScaleTransition(
+      scale: _animController,
+      child: buildEnabledBubble(),
     );
   }
 }
+
+// class Bubble extends StatefulWidget {
+//   final int value;
+//   final void Function(int, bool)? onTap;
+//   final bool? initiallyEnabled;
+
+//   const Bubble({
+//     Key? key,
+//     required this.value,
+//     this.onTap,
+//     this.initiallyEnabled = false,
+//   }) : super(key: key);
+
+//   @override
+//   State<Bubble> createState() => _BubbleState();
+// }
+
+// class _BubbleState extends State<Bubble> with TickerProviderStateMixin {
+//   late final AnimationController _animController;
+//   late bool enabled;
+
+//   @override
+//   void initState() {
+//     _animController = AnimationController(
+//       vsync: this,
+//       duration: const Duration(milliseconds: 250),
+//     )..forward();
+//     enabled = widget.initiallyEnabled!;
+//     super.initState();
+//   }
+
+//   @override
+//   void dispose() {
+//     _animController.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return InkWell(
+//       customBorder: const CircleBorder(),
+//       onTap: () {
+//         setState(() => enabled = !enabled);
+//         if (widget.onTap != null) widget.onTap!(widget.value, enabled);
+//       },
+//       child: buildBubble(),
+//     );
+//   }
+
+//   Widget buildBubble() {
+//     if (enabled) {
+//       return Stack(
+//         children: [
+//           buildEnabledBubble(),
+//           buildAnimatedBubble(),
+//         ],
+//       );
+//     }
+//     return buildDisabledBubble();
+//   }
+
+//   Widget buildDisabledBubble() {
+//     return Container(
+//       padding: const EdgeInsets.all(4),
+//       child: Center(
+//         child: Text(
+//           numToDay(widget.value),
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget buildEnabledBubble() {
+//     return Container(
+//       padding: const EdgeInsets.all(4),
+//       decoration: BoxDecoration(
+//         shape: BoxShape.circle,
+//         border: Border.all(color: Colors.blue),
+//       ),
+//       child: Center(
+//         child: Text(
+//           numToDay(widget.value),
+//           style: const TextStyle(color: Colors.blue),
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget buildAnimatedBubble() {
+//     return ScaleTransition(
+//       scale: _animController,
+//       child: buildEnabledBubble(),
+//     );
+//   }
+// }
 
 String numToDay(int day) {
   switch (day) {
