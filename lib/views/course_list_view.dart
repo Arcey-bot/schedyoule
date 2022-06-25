@@ -18,13 +18,6 @@ class CourseListView extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(courseListViewAppBarTitle),
-        actions: [
-          IconButton(
-            onPressed: () => print(
-                '${provider.latest} - ${provider.courses.length} - ${provider.courses}'),
-            icon: const Icon(Icons.refresh),
-          ),
-        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
