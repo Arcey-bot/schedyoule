@@ -39,3 +39,4 @@ const int generateAnimationDuration = 1500; // Milliseconds
 const double generateAnimationOpacity = 0.4; // Opacity [0, 1]
 const double generateAnimationOffset = 0.3; // [0, 1]
 const double generateAnimationSize = 0.25; // [0, 1]
+const Duration bubbleAnimationDuration = Duration(milliseconds: 250);

@@ -67,6 +67,7 @@ class _CourseCardState extends ConsumerState<CourseCard> {
               children: [
                 Expanded(
                   child: BubbleDayPicker(
+                    key: ValueKey(widget.course),
                     exclude: const {DateTime.saturday, DateTime.sunday},
                     selected: widget.course.days,
                     onChanged: _onDayChanged,
