@@ -43,7 +43,6 @@ final courses = [
     time: TimeSlot.fromInt(
         startHour: 8, startMinute: 0, endHour: 8, endMinute: 50),
     days: {
-      DateTime.saturday,
       DateTime.thursday,
     },
   ),
