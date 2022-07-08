@@ -4,6 +4,7 @@ import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
 
 // TODO: Prettify
+// TODO: Banding should be based on number of days shown, not specific days
 class ScheduleListView extends ConsumerWidget {
   final List<Schedule> schedules;
   const ScheduleListView({Key? key, required this.schedules}) : super(key: key);
@@ -62,13 +63,13 @@ class ScheduleBlock extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              for (final day in schedule.scheduledDays)
+              for (final int day in schedule.scheduledDays)
                 buildTitleCard(Schedule.numToDay(day)),
             ],
           ),
         ),
         Positioned(
-          left: 120,
+          left: 100,
           right: 0, // Simply must be set for scrollview to function
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -76,7 +77,7 @@ class ScheduleBlock extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (final day in schedule.scheduledDays)
+                for (final int day in schedule.scheduledDays)
                   buildCourseDayList(schedule.schedule[day]!),
               ],
             ),
@@ -86,7 +87,7 @@ class ScheduleBlock extends StatelessWidget {
     );
   }
 
-  //* IntrinsicHeight based UI (IntrinsicHeight is slower than Stacks)
+  //* IntrinsicHeight based UI (IntrinsicHeight is slower than Stack)
   // @override
   // Widget build(BuildContext context) {
   //   return IntrinsicHeight(
@@ -167,7 +168,7 @@ class ScheduleBlock extends StatelessWidget {
   Expanded buildBandedRow(String text) {
     return Expanded(
       child: Container(
-        color: Colors.grey.shade300,
+        color: Colors.blue.shade200,
         child: buildRow(text, true),
       ),
     );
@@ -175,7 +176,7 @@ class ScheduleBlock extends StatelessWidget {
 
   Card buildRow(String text, [bool banded = false]) {
     return Card(
-      color: banded ? Colors.grey.shade300 : null,
+      color: banded ? Colors.blue.shade200 : null,
       elevation: 0,
       margin: const EdgeInsets.all(8),
       child: Padding(
@@ -200,7 +201,8 @@ class ScheduleBlock extends StatelessWidget {
       children: [
         for (final Course c in courses)
           Card(
-            color: Colors.pink.shade50,
+            // color: Colors.pink.shade50,
+            elevation: 2,
             child: Padding(
               padding: const EdgeInsets.all(2.0),
               child: Column(
