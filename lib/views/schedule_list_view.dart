@@ -49,34 +49,36 @@ class ScheduleBlock extends StatelessWidget {
 
   const ScheduleBlock({Key? key, required this.schedule}) : super(key: key);
 
+  //* Stack based UI
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Stack(
+      alignment: AlignmentDirectional.center,
       children: [
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (final day in schedule.scheduledDays)
-              buildTitleCard(
-                Schedule.numToDay(day),
-              ),
-          ],
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final day in schedule.scheduledDays)
+                buildTitleCard(Schedule.numToDay(day)),
+            ],
+          ),
         ),
-        const SizedBox(width: 4.0),
-        Expanded(
-          child: Container(
-            color: Colors.grey.shade300,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  for (final day in schedule.scheduledDays)
-                    buildCourseDayList(schedule.schedule[day]!),
-                ],
-              ),
+        Positioned(
+          left: 120,
+          right: 0, // Simply must be set for scrollview to function
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final day in schedule.scheduledDays)
+                  buildCourseDayList(schedule.schedule[day]!),
+              ],
             ),
           ),
         ),
@@ -84,12 +86,110 @@ class ScheduleBlock extends StatelessWidget {
     );
   }
 
+  //* IntrinsicHeight based UI (IntrinsicHeight is slower than Stacks)
+  // @override
+  // Widget build(BuildContext context) {
+  //   return IntrinsicHeight(
+  //     child: Row(
+  //       children: [
+  //         Container(
+  //           color: Colors.pink.shade200,
+  //           child: Column(
+  //             mainAxisSize: MainAxisSize.max,
+  //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               for (final day in schedule.scheduledDays)
+  //                 buildTitleCard(Schedule.numToDay(day)),
+  //             ],
+  //           ),
+  //         ),
+  //         const SizedBox(width: 4.0),
+  //         Expanded(
+  //           child: Container(
+  //             color: Colors.grey.shade300,
+  //             child: SingleChildScrollView(
+  //               scrollDirection: Axis.horizontal,
+  //               child: Column(
+  //                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   for (final day in schedule.scheduledDays)
+  //                     buildCourseDayList(schedule.schedule[day]!),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  // Widget buildTitleCard(String text) {
+  //   return IntrinsicHeight(
+  //     child: Row(
+  //       crossAxisAlignment: CrossAxisAlignment.stretch,
+  //       children: [
+  //         Container(
+  //           color: Colors.grey.shade400,
+  //           child: Card(
+  //             elevation: 1,
+  //             margin: const EdgeInsets.all(8),
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(4.0),
+  //               child: Text(
+  //                 text,
+  //                 overflow: TextOverflow.clip,
+  //                 maxLines: 1,
+  //                 style: const TextStyle(
+  //                   fontWeight: FontWeight.bold,
+  //                   fontSize: 16,
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget buildTitleCard(String text) {
+    // Only band days that start with a T (Tues/Thurs)
+
+    return Row(
+      children: [
+        text.startsWith('T') ? buildBandedRow(text) : buildRow(text),
+      ],
+    );
+  }
+
+  Expanded buildBandedRow(String text) {
+    return Expanded(
+      child: Container(
+        color: Colors.grey.shade300,
+        child: buildRow(text, true),
+      ),
+    );
+  }
+
+  Card buildRow(String text, [bool banded = false]) {
     return Card(
-      elevation: 2,
+      color: banded ? Colors.grey.shade300 : null,
+      elevation: 0,
       margin: const EdgeInsets.all(8),
-      color: Colors.teal.shade100,
-      child: Text(text),
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Text(
+          text,
+          overflow: TextOverflow.clip,
+          maxLines: 1,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+      ),
     );
   }
 
@@ -99,13 +199,16 @@ class ScheduleBlock extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (final Course c in courses)
-          Container(
+          Card(
             color: Colors.pink.shade50,
-            child: Column(
-              children: [
-                Text(c.name),
-                Text(c.time.toString()),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Column(
+                children: [
+                  Text(c.name),
+                  Text(c.time.toString()),
+                ],
+              ),
             ),
           ),
       ],
