@@ -60,7 +60,6 @@ class _CourseCardState extends ConsumerState<CourseCard> {
                 Flexible(flex: 1, child: buildCreditField()),
               ],
             ),
-            const Divider(color: Colors.grey, height: 4.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.min,
