@@ -65,7 +65,7 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     //     Schedule()..addCourse(c)
     // ];
 
-    // EVERY course can be a possible first course technically!
+    // EVERY course can be a possible first course!
     final List<Schedule> possibleSchedules = [
       for (final Course c in courses) Schedule()..addCourse(c)
     ];
@@ -75,19 +75,26 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     /// was the starting course in possibleSchedules[0], then offset would be 1.
     int offset = 1;
     for (int i = 0 + offset; i < courses.length; i++) {
-      for (final Schedule schedule in possibleSchedules) {
-        if (schedule.canAddCourse(courses[i])) {
-          schedule.addCourse(courses[i]);
-        } else {
-          final Schedule newSchedule = schedule.deepcopy();
-          Course? conflictCourse = newSchedule.conflictingCourse(courses[i]);
+      for (int j = 0; j < possibleSchedules.length; j++) {
+        final int code = possibleSchedules[j].canAddCourse(courses[i]);
+        switch (code) {
+          case 1: // Course already in schedule
+            break;
+          case 0: // Course can be added without issue
+            possibleSchedules[j].addCourse(courses[i]);
+            break;
+          case -1: // Course is not in schedule and causes a conflict
+            final Schedule newSchedule = possibleSchedules[j].deepcopy();
+            Course? conflictCourse = newSchedule.conflictingCourse(courses[i]);
 
-          // Remove courses until there are no further conflicts
-          while (conflictCourse != null) {
-            newSchedule.removeCourse(conflictCourse);
-            conflictCourse = newSchedule.conflictingCourse(courses[i]);
-          }
-          newSchedule.addCourse(courses[i]);
+            // Remove courses until there are no further conflicts
+            while (conflictCourse != null) {
+              newSchedule.removeCourse(conflictCourse);
+              conflictCourse = newSchedule.conflictingCourse(courses[i]);
+            }
+            newSchedule.addCourse(courses[i]);
+            possibleSchedules.add(newSchedule);
+            break;
         }
       }
       // Ensure courses that couldn't be starting courses will all be tested.
