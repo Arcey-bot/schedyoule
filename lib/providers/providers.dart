@@ -39,6 +39,24 @@ final courses = [
   ),
   Course(
     key: UniqueKey(),
+    name: 'Math',
+    time: TimeSlot.fromInt(
+        startHour: 2, startMinute: 0, endHour: 2, endMinute: 50),
+    days: {
+      DateTime.thursday,
+    },
+  ),
+  Course(
+    key: UniqueKey(),
+    name: 'Sci',
+    time: TimeSlot.fromInt(
+        startHour: 11, startMinute: 0, endHour: 12, endMinute: 50),
+    days: {
+      DateTime.thursday,
+    },
+  ),
+  Course(
+    key: UniqueKey(),
     name: 'Bio',
     time: TimeSlot.fromInt(
         startHour: 8, startMinute: 0, endHour: 8, endMinute: 50),
