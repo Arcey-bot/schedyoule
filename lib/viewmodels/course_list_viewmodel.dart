@@ -74,8 +74,8 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     /// same index in `possibleSchedules`. For example, if a Course named Bio
     /// was the starting course in possibleSchedules[0], then offset would be 1.
     int offset = 1;
-    for (int i = 0 + offset; i < courses.length; i++) {
-      for (int j = 0; j < possibleSchedules.length; j++) {
+    for (int j = 0; j < possibleSchedules.length; j++) {
+      for (int i = offset; i < courses.length; i++) {
         final int code = possibleSchedules[j].canAddCourse(courses[i]);
         switch (code) {
           case 1: // Course already in schedule
@@ -97,7 +97,9 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
             break;
         }
       }
-      // Ensure courses that couldn't be starting courses will all be tested.
+      // Ensure courses that are starting courses are not unnecessarily tested.
+      //// Because of sorted courses, it is guaranteed that every existing schedule
+      //// already has/conflicts with offset-1.
       if (offset <= possibleSchedules.length) offset++;
     }
 
