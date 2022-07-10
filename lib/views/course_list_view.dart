@@ -18,18 +18,7 @@ class CourseListView extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(courseListViewAppBarTitle),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await ref.read(courseScheduleProvider.notifier).createDefaultCourse();
-
-          // If generation was disabled, enable it since a valid course exists
-          if (ref.read(generateStateProvider) == GenerateButtonState.disabled) {
-            ref.read(generateStateProvider.notifier).state =
-                GenerateButtonState.ready;
-          }
-        },
-        child: const Icon(Icons.add),
+        actions: [buildAddCourseButton(ref)],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -41,6 +30,21 @@ class CourseListView extends ConsumerWidget {
           ],
         ),
       ),
+    );
+  }
+
+  IconButton buildAddCourseButton(WidgetRef ref) {
+    return IconButton(
+      onPressed: () async {
+        await ref.read(courseScheduleProvider.notifier).createDefaultCourse();
+
+        // If generation was disabled, enable it since a valid course exists
+        if (ref.read(generateStateProvider) == GenerateButtonState.disabled) {
+          ref.read(generateStateProvider.notifier).state =
+              GenerateButtonState.ready;
+        }
+      },
+      icon: const Icon(Icons.add),
     );
   }
 
