@@ -62,7 +62,7 @@ class CourseListView extends ConsumerWidget {
   ) {
     return ListView.separated(
       itemCount: provider.courses.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      separatorBuilder: (context, index) => const SizedBox(height: 8),
       itemBuilder: (context, index) => Dismissible(
         key: UniqueKey(),
         onDismissed: (dir) async {
