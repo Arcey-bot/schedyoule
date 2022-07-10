@@ -136,7 +136,10 @@ class Schedule implements Comparable<Schedule> {
 
     // Intersection returns only possible conflict point between courses
     for (final int day in scheduledDays.intersection(c.days)) {
-      if (schedule[day]!.last.conflictsWith(c)) return schedule[day]!.last;
+      // Ensure courses exist to check for conflicts
+      if (schedule[day]!.isNotEmpty && schedule[day]!.last.conflictsWith(c)) {
+        return schedule[day]!.last;
+      }
     }
     return null;
   }
