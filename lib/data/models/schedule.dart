@@ -38,28 +38,26 @@ class Schedule implements Comparable<Schedule> {
     }
   }
 
-  Schedule.custom(schedule, courseNames, scheduledDays) : super() {
-    schedule = schedule;
-    courseNames = courseNames;
-    scheduledDays = scheduledDays;
-  }
-
   /// Determines if a course can be added to the current schedule
   /// without causing conflicts
-  bool canAddCourse(Course course) {
+  /// Returns -1 if the course conflicts with another course in the schedule
+  /// Returns 0 if course can be added without issue
+  /// Returns 1 if a course with the same name already exists in schedule
+  int canAddCourse(Course course) {
     // Check if course is already in the schedule to prevent duplicates
-    if (courseNames.contains(course.name)) return false;
+    if (courseNames.contains(course.name)) return 1;
 
-    // If empty, then there are no courses to cause a conflict with
-    if (scheduledDays.isEmpty) return true;
+    // if (scheduledDays.isEmpty) return true;
 
     // Intersection of course.days and scheduledDays returns potential conflicts
     for (final int day in scheduledDays.intersection(course.days)) {
       // Check that the last course's timeslot doesn't conflict with `course`'s
       // timeslot
-      if (schedule[day]!.last.conflictsWith(course)) return false;
+      if (schedule[day]!.last.conflictsWith(course)) return -1;
     }
-    return true;
+
+    // If empty, then there are no courses to cause a conflict with
+    return 0;
   }
 
   /// Add a course to the schedule
@@ -145,11 +143,15 @@ class Schedule implements Comparable<Schedule> {
 
   /// Returns a deep copy of `this`
   Schedule deepcopy() {
-    return Schedule.custom(
-      Map.from(schedule),
-      Set.from(courseNames),
-      SplayTreeSet.from(scheduledDays),
-    );
+    final Set<Course> courses = {};
+
+    // Each value in the schedule is a list of courses that must be copied
+    for (final List<Course> l in schedule.values) {
+      courses.addAll(l);
+    }
+    // schedule.values.map((element) => courses.addAll(element));
+
+    return Schedule.fromCourses(courses.toList());
   }
 
   /// Remove given course on every day it is in the schedule
