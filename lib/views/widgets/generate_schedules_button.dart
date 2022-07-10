@@ -60,6 +60,8 @@ class GradientButton extends StatelessWidget {
         SizedBox(
           width: double.maxFinite,
           child: ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
             onPressed: () {},
             child: const Text(courseListViewGenerateButtonGenerating),
           ),
