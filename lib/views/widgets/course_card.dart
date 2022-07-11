@@ -107,36 +107,29 @@ class _CourseCardState extends ConsumerState<CourseCard> {
   }
 
   Widget buildNameField() {
-    return Focus(
-      onFocusChange: (v) {
-        // Only updates card when it is no longer selected by the user
-        if (!v) {
-          ref.read(courseScheduleProvider.notifier).updateCourse(
-                widget.course.key!,
-                widget.course.copyWith(name: _nameController.text),
-              );
+    return TextField(
+      decoration: InputDecoration(
+        suffixIcon: const Icon(Icons.edit),
+        hintText: courseEntryCardNameFieldHint,
+        hintStyle: _nameController.text.isEmpty
+            ? TextStyle(color: Colors.red.shade400)
+            : null,
+      ),
+      controller: _nameController,
+      style: const TextStyle(
+        fontWeight: FontWeight.w900,
+        fontSize: 18.0, // Default is 14
+      ),
+      onTap: () {
+        if (_clearNameOnTap!) {
+          _nameController.clear();
+          _clearNameOnTap = false;
         }
       },
-      child: TextField(
-        decoration: InputDecoration(
-          suffixIcon: const Icon(Icons.edit),
-          hintText: courseEntryCardNameFieldHint,
-          hintStyle: _nameController.text.isEmpty
-              ? TextStyle(color: Colors.red.shade400)
-              : null,
-        ),
-        controller: _nameController,
-        style: const TextStyle(
-          fontWeight: FontWeight.w900,
-          fontSize: 18.0, // Default is 14
-        ),
-        onTap: () {
-          if (_clearNameOnTap!) {
-            _nameController.clear();
-            _clearNameOnTap = false;
-          }
-        },
-      ),
+      onChanged: (s) => ref.read(courseScheduleProvider.notifier).updateCourse(
+            widget.course.key!,
+            widget.course.copyWith(name: _nameController.text),
+          ),
     );
   }
 
