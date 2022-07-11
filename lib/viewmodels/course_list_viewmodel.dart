@@ -37,12 +37,14 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     );
 
     state = state.copyWith(courses: [...courses, emptyCourse]);
-    return defaultCourse;
+    // state.addCourse(emptyCourse);
+    return emptyCourse;
   }
 
   /// Add a course to the list
   Future<void> addCourse(Course course) async {
     state = state.copyWith(courses: [...courses, course]);
+    // state.courses.add(course);
   }
 
   /// Remove a course from the list, returns true if successfully removed.
@@ -55,10 +57,12 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
 
   /// Replace a course in the list with the given course
   Future<void> updateCourse(Key key, Course course) async {
-    final List<Course> newCourses = List.from(courses);
-    final int index = newCourses.indexWhere((e) => e.key == course.key);
-    newCourses.replaceRange(index, index + 1, [course]);
-    state = state.copyWith(courses: newCourses);
+    // final List<Course> newCourses = List.from(courses);
+    // final int index = newCourses.indexWhere((e) => e.key == course.key);
+    // newCourses.replaceRange(index, index + 1, [course]);
+    // state = state.copyWith(courses: newCourses);
+    final int replaceAt = state.courses.indexWhere((e) => e.key == course.key);
+    state.courses.replaceRange(replaceAt, replaceAt + 1, [course]);
   }
 
   Future<void> setLatest(TimeOfDay latest) async => state = state.copyWith(
@@ -75,6 +79,7 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
   ///
   /// Will attempt to maximize amount of courses taken in a schedule.
   Future<List<Schedule>> generateSchedules() async {
+    state = state; // Ensure everything is up to date
     final List<Course> courses = List.of(state.courses);
     courses.sort();
 
