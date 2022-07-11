@@ -127,7 +127,9 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
       if (offset <= possibleSchedules.length) offset++;
     }
 
-    return possibleSchedules;
+    // Sort schedules from highest -> lowest credits
+    possibleSchedules.sort();
+    return possibleSchedules.reversed.toList();
   }
 
   /// Get a list of all courses starting at or before a specified time
