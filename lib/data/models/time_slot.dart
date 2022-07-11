@@ -47,7 +47,7 @@ class TimeSlot implements Comparable<TimeSlot> {
   @override
   String toString() {
     //* Can use jm() instead of Hm() for localized 12hr time.
-    return '${DateFormat.Hm().format(start)} - ${DateFormat.Hm().format(end)}';
+    return '${DateFormat.jm().format(start)} - ${DateFormat.jm().format(end)}';
   }
 
   /// Compares this to `other`
