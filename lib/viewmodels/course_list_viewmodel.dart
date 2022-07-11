@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart' show Key, TimeOfDay;
+import 'dart:math';
+
+import 'package:flutter/material.dart' show Key, TimeOfDay, UniqueKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
@@ -15,7 +17,26 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
 
   /// Creates a new defaultCourse and adds appends it to the state's courselist
   Future<Course> createDefaultCourse() async {
-    state = state.copyWith(courses: [...courses, defaultCourse]);
+    final Course emptyCourse = Course(
+      key: UniqueKey(),
+      name: courseCardPlaceholderTitles[
+          Random().nextInt(courseCardPlaceholderTitles.length)],
+      time: TimeSlot.fromInt(
+        startHour: 10,
+        startMinute: 0,
+        endHour: 11,
+        endMinute: 0,
+      ),
+      days: {
+        DateTime.monday,
+        DateTime.wednesday,
+        DateTime.friday,
+      },
+      credits: defaultCredits,
+      placeholder: true,
+    );
+
+    state = state.copyWith(courses: [...courses, emptyCourse]);
     return defaultCourse;
   }
 
@@ -54,8 +75,6 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
   ///
   /// Will attempt to maximize amount of courses taken in a schedule.
   Future<List<Schedule>> generateSchedules() async {
-    final start = DateTime.now();
-
     final List<Course> courses = List.of(state.courses);
     courses.sort();
 
@@ -102,9 +121,6 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
       //// already has/conflicts with offset-1.
       if (offset <= possibleSchedules.length) offset++;
     }
-
-    final end = DateTime.now();
-    print('Time to generate: ${end.difference(start)}');
 
     return possibleSchedules;
   }
