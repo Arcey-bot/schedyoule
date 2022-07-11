@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
 
-// TODO: Prettify
 // TODO: Banding should be based on number of days shown, not specific days
 class ScheduleListView extends ConsumerWidget {
   final List<Schedule> schedules;
@@ -155,9 +154,9 @@ class ScheduleBlock extends StatelessWidget {
   //     ),
   //   );
   // }
+
   Widget buildTitleCard(String text) {
     // Only band days that start with a T (Tues/Thurs)
-
     return Row(
       children: [
         text.startsWith('T') ? buildBandedRow(text) : buildRow(text),
@@ -202,7 +201,7 @@ class ScheduleBlock extends StatelessWidget {
         for (final Course c in courses)
           Card(
             // color: Colors.pink.shade50,
-            elevation: 2,
+            elevation: 0,
             child: Padding(
               padding: const EdgeInsets.all(2.0),
               child: Column(
