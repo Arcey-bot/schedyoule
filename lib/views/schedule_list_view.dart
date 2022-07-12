@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
 
-// TODO: Banding should be based on number of days shown, not specific days
 class ScheduleListView extends ConsumerWidget {
   final List<Schedule> schedules;
   const ScheduleListView({Key? key, required this.schedules}) : super(key: key);
@@ -30,7 +28,7 @@ class ScheduleListView extends ConsumerWidget {
                     title: Text(
                       'Schedule ${index + 1} (${schedules[index].totalCredits} Credits )',
                     ),
-                    initiallyExpanded: index < numSchedulesStartExpaneded,
+                    initiallyExpanded: true,
                     childrenPadding: const EdgeInsets.all(8),
                     children: [ScheduleBlock(schedule: schedules[index])],
                   ),
@@ -62,8 +60,11 @@ class ScheduleBlock extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              for (final int day in schedule.scheduledDays)
-                buildTitleCard(Schedule.numToDay(day)),
+              for (int i = 0; i < schedule.scheduledDays.length; i++)
+                buildTitleCard(
+                  Schedule.numToDay(schedule.scheduledDays.elementAt(i)),
+                  i.isEven,
+                ),
             ],
           ),
         ),
@@ -155,11 +156,10 @@ class ScheduleBlock extends StatelessWidget {
   //   );
   // }
 
-  Widget buildTitleCard(String text) {
-    // Only band days that start with a T (Tues/Thurs)
+  Widget buildTitleCard(String text, bool banded) {
     return Row(
       children: [
-        text.startsWith('T') ? buildBandedRow(text) : buildRow(text),
+        banded ? buildBandedRow(text) : buildRow(text),
       ],
     );
   }
@@ -200,13 +200,15 @@ class ScheduleBlock extends StatelessWidget {
       children: [
         for (final Course c in courses)
           Card(
-            // color: Colors.pink.shade50,
-            elevation: 0,
+            elevation: 1,
             child: Padding(
               padding: const EdgeInsets.all(2.0),
               child: Column(
                 children: [
-                  Text(c.name),
+                  Text(
+                    c.name,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   Text(c.time.toString()),
                 ],
               ),
