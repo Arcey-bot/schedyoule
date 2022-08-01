@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
 
+// TODO: Make StatefulConsumer if a list will be used to store expansion data
 class ScheduleListView extends ConsumerWidget {
   final List<Schedule> schedules;
   const ScheduleListView({Key? key, required this.schedules}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Shouldn't be recreated on every build
+    final List<bool> _isExpanded = List.generate(
+      schedules.length,
+      (i) => i < numSchedulesStartExpanded,
+      growable: false,
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Schedules'),
@@ -28,7 +37,7 @@ class ScheduleListView extends ConsumerWidget {
                     title: Text(
                       'Schedule ${index + 1} (${schedules[index].totalCredits} Credits )',
                     ),
-                    initiallyExpanded: true,
+                    initiallyExpanded: index < numSchedulesStartExpanded,
                     childrenPadding: const EdgeInsets.all(8),
                     children: [ScheduleBlock(schedule: schedules[index])],
                   ),

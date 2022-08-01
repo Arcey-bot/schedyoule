@@ -33,7 +33,7 @@ enum GenerateButtonState {
 }
 
 const defaultCredits = 3;
-const numSchedulesStartExpaneded = 2;
+const numSchedulesStartExpanded = 2;
 const TimeOfDay defaultLatest = TimeOfDay(hour: 9, minute: 0);
 const int generateAnimationDuration = 1500; // Milliseconds
 const double generateAnimationOpacity = 0.4; // Opacity [0, 1]
