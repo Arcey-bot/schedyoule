@@ -4,19 +4,30 @@ import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
 
 // TODO: Make StatefulConsumer if a list will be used to store expansion data
-class ScheduleListView extends ConsumerWidget {
+class ScheduleListView extends ConsumerStatefulWidget {
   final List<Schedule> schedules;
   const ScheduleListView({Key? key, required this.schedules}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Shouldn't be recreated on every build
-    final List<bool> _isExpanded = List.generate(
-      schedules.length,
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ScheduleListViewState();
+}
+
+class _ScheduleListViewState extends ConsumerState<ScheduleListView> {
+  late final List<bool> _isExpanded;
+
+  @override
+  void initState() {
+    _isExpanded = List.generate(
+      widget.schedules.length,
       (i) => i < numSchedulesStartExpanded,
       growable: false,
     );
+    super.initState();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Schedules'),
@@ -25,21 +36,25 @@ class ScheduleListView extends ConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
-            child: Text('Generated ${schedules.length} schedules'),
+            child: Text('Generated ${widget.schedules.length} schedules'),
           ),
           const Divider(thickness: 4),
           Expanded(
             child: ListView.builder(
-              itemCount: schedules.length,
+              itemCount: widget.schedules.length,
               itemBuilder: (context, index) {
                 return Card(
                   child: ExpansionTile(
                     title: Text(
-                      'Schedule ${index + 1} (${schedules[index].totalCredits} Credits )',
+                      'Schedule ${index + 1} (${widget.schedules[index].totalCredits} Credits )',
                     ),
-                    initiallyExpanded: index < numSchedulesStartExpanded,
+                    initiallyExpanded: _isExpanded[index],
+                    onExpansionChanged: (expanded) =>
+                        _isExpanded[index] = !_isExpanded[index],
                     childrenPadding: const EdgeInsets.all(8),
-                    children: [ScheduleBlock(schedule: schedules[index])],
+                    children: [
+                      ScheduleBlock(schedule: widget.schedules[index])
+                    ],
                   ),
                 );
               },
