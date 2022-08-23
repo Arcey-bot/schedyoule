@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
 
-// TODO: Make StatefulConsumer if a list will be used to store expansion data
 class ScheduleListView extends ConsumerStatefulWidget {
   final List<Schedule> schedules;
   const ScheduleListView({Key? key, required this.schedules}) : super(key: key);
