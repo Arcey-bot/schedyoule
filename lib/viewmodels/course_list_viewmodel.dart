@@ -65,6 +65,14 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     state.courses.replaceRange(replaceAt, replaceAt + 1, [course]);
   }
 
+  /// Replace a course in the list with the given course and forces a rebuild
+  Future<void> updateCourseRebuild(Key key, Course course) async {
+    final List<Course> newCourses = List.from(courses);
+    final int index = newCourses.indexWhere((e) => e.key == course.key);
+    newCourses.replaceRange(index, index + 1, [course]);
+    state = state.copyWith(courses: newCourses);
+  }
+
   Future<void> setLatest(TimeOfDay latest) async => state = state.copyWith(
         latest: DateTime(
           2022,
