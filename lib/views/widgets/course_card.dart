@@ -181,10 +181,14 @@ class _CourseCardState extends ConsumerState<CourseCard> {
     );
   }
 
+  // Update name & credits in case user clicks on time
+  // while a textfield is still the focus
   Future<void> _onStartChange(TimeOfDay time) async {
-    await ref.read(courseScheduleProvider.notifier).updateCourse(
+    await ref.read(courseScheduleProvider.notifier).updateCourseRebuild(
           widget.course.key!,
           widget.course.copyWith(
+            name: _nameController.text,
+            credits: int.tryParse(_creditController.text) ?? defaultCredits,
             time: TimeSlot(
               start: DateTime(2022, 1, 1, time.hour, time.minute),
               end: widget.course.time.end,
@@ -194,9 +198,11 @@ class _CourseCardState extends ConsumerState<CourseCard> {
   }
 
   Future<void> _onEndChange(TimeOfDay time) async {
-    await ref.read(courseScheduleProvider.notifier).updateCourse(
+    await ref.read(courseScheduleProvider.notifier).updateCourseRebuild(
           widget.course.key!,
           widget.course.copyWith(
+            name: _nameController.text,
+            credits: int.tryParse(_creditController.text) ?? defaultCredits,
             time: TimeSlot(
               start: widget.course.time.start,
               end: DateTime(2022, 1, 1, time.hour, time.minute),
