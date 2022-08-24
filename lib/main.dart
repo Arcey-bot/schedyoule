@@ -4,7 +4,7 @@ import 'package:schedyoule/views/home_view.dart';
 
 // TODO: Tips screen or something idk
 // TODO: Schedules get more fucked up the further down you scroll (Possibly fixed?)
-// TODO: Update animation (Entire card is no longer being rebuilt)
+// TODO: Save courses on exit
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
