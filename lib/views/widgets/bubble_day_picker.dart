@@ -11,13 +11,6 @@ const Set<int> days = {
   DateTime.saturday,
 };
 
-/// Both are necessary to prevent all bubbles from animating
-/// when any one of them are clicked. Must be global, when stored as state
-/// local to [BubbleDayPicker], values are lost since onChanged is modifying a
-/// parent, thus the entire widget is slated for disposal.
-int? lastClicked;
-Key? lastKey;
-
 class BubbleDayPicker extends StatefulWidget {
   // Days listed here will not be rendered to the screen.
   final Set<int>? exclude;
@@ -41,8 +34,6 @@ class BubbleDayPicker extends StatefulWidget {
 
 class _BubbleDayPickerState extends State<BubbleDayPicker> {
   void _onBubbleTap(int value, bool changed) {
-    lastClicked = value;
-    lastKey = widget.key;
     if (widget.onChanged != null) widget.onChanged!(value, changed);
   }
 
@@ -95,12 +86,6 @@ class _BubbleState extends State<Bubble> with TickerProviderStateMixin {
     );
     enabled = widget.initiallyEnabled!;
     super.initState();
-  }
-
-  @override
-  void didUpdateWidget(covariant Bubble oldWidget) {
-    _animController.forward();
-    super.didUpdateWidget(oldWidget);
   }
 
   @override
