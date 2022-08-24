@@ -59,7 +59,6 @@ class _BubbleDayPickerState extends State<BubbleDayPicker> {
               value: s,
               onTap: _onBubbleTap,
               initiallyEnabled: widget.selected?.contains(s),
-              shouldAnimate: lastClicked == s && widget.key == lastKey,
             ),
           ),
       ],
@@ -71,14 +70,12 @@ class Bubble extends StatefulWidget {
   final int value;
   final void Function(int, bool)? onTap;
   final bool? initiallyEnabled;
-  final bool? shouldAnimate;
 
   const Bubble({
     Key? key,
     required this.value,
     this.onTap,
     this.initiallyEnabled = false,
-    this.shouldAnimate = false,
   }) : super(key: key);
 
   @override
@@ -88,6 +85,7 @@ class Bubble extends StatefulWidget {
 class _BubbleState extends State<Bubble> with TickerProviderStateMixin {
   late final AnimationController _animController;
   late bool enabled;
+  bool shouldAnimate = false;
 
   @override
   void initState() {
@@ -96,8 +94,13 @@ class _BubbleState extends State<Bubble> with TickerProviderStateMixin {
       duration: bubbleAnimationDuration,
     );
     enabled = widget.initiallyEnabled!;
-    if (widget.shouldAnimate!) _animController.forward();
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant Bubble oldWidget) {
+    _animController.forward();
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -111,7 +114,12 @@ class _BubbleState extends State<Bubble> with TickerProviderStateMixin {
     return InkWell(
       customBorder: const CircleBorder(),
       onTap: () {
-        setState(() => enabled = !enabled);
+        _animController.reset(); // Reset animation to be played again
+        _animController.forward();
+        setState(() {
+          enabled = !enabled;
+          shouldAnimate = true;
+        });
         if (widget.onTap != null) widget.onTap!(widget.value, enabled);
       },
       child: buildBubble(),
@@ -122,7 +130,7 @@ class _BubbleState extends State<Bubble> with TickerProviderStateMixin {
     // Bubble is enabled
     if (enabled) {
       // Bubble must be animated
-      if (widget.shouldAnimate!) {
+      if (shouldAnimate) {
         return buildAnimatedBubble();
       }
       return buildEnabledBubble();
