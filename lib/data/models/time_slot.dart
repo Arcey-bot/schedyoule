@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:intl/intl.dart';
 
 class TimeSlot implements Comparable<TimeSlot> {
@@ -77,4 +79,23 @@ class TimeSlot implements Comparable<TimeSlot> {
     }
     return false;
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'start': start.millisecondsSinceEpoch,
+      'end': end.millisecondsSinceEpoch,
+    };
+  }
+
+  factory TimeSlot.fromMap(Map<String, dynamic> map) {
+    return TimeSlot(
+      start: DateTime.fromMillisecondsSinceEpoch(map['start']),
+      end: DateTime.fromMillisecondsSinceEpoch(map['end']),
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory TimeSlot.fromJson(String source) =>
+      TimeSlot.fromMap(json.decode(source));
 }

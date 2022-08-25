@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart' show Key, UniqueKey;
 
 import 'time_slot.dart';
@@ -71,4 +73,32 @@ class Course implements Comparable<Course> {
       days: days ?? this.days,
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'key': key?.toString(),
+      'time': time.toMap(),
+      'credits': credits,
+      'name': name,
+      'crn': crn,
+      'days': days.toList(),
+      'placeholder': placeholder,
+    };
+  }
+
+  factory Course.fromMap(Map<String, dynamic> map) {
+    return Course(
+      key: Key(map['key']),
+      time: TimeSlot.fromMap(map['time']),
+      credits: map['credits']?.toInt() ?? 0,
+      name: map['name'] ?? '',
+      crn: map['crn'],
+      days: Set<int>.from(map['days']),
+      placeholder: map['placeholder'],
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Course.fromJson(String source) => Course.fromMap(json.decode(source));
 }
