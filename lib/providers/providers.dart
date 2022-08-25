@@ -5,9 +5,15 @@ import 'package:schedyoule/data/models/models.dart';
 import 'package:schedyoule/data/repositories/course_schedule_repository.dart';
 import 'package:schedyoule/viewmodels/course_list_viewmodel.dart';
 
+final savedCoursesProvider = StateProvider<List<Course>?>(
+  (ref) => [],
+);
+
 final courseScheduleProvider =
     StateNotifierProvider<CourseListViewModel, CourseScheduleRepository>(
-  (ref) => CourseListViewModel(courses),
+  (ref) {
+    return CourseListViewModel(ref.watch(savedCoursesProvider));
+  },
 );
 
 final generateStateProvider =
