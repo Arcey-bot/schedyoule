@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart' show Key, TimeOfDay, UniqueKey;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:schedyoule/constants/constants.dart';
 import 'package:schedyoule/data/models/models.dart';
 import 'package:schedyoule/data/repositories/course_schedule_repository.dart';
@@ -18,7 +19,6 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
   /// Creates a new defaultCourse and adds appends it to the state's courselist
   Future<Course> createDefaultCourse() async {
     final Course emptyCourse = Course(
-      key: UniqueKey(),
       name: courseCardPlaceholderTitles[
           Random().nextInt(courseCardPlaceholderTitles.length)],
       time: TimeSlot.fromInt(
@@ -37,7 +37,8 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     );
 
     state = state.copyWith(courses: [...courses, emptyCourse]);
-    // state.addCourse(emptyCourse);
+    Hive.box(coursesBoxKey)
+        .put(emptyCourse.key.toString(), emptyCourse.toJson());
     return emptyCourse;
   }
 
@@ -52,6 +53,7 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     final List<Course> newCourses = List.from(courses);
     final r = newCourses.remove(course);
     state = state.copyWith(courses: newCourses);
+    Hive.box(coursesBoxKey).delete(course.key.toString());
     return r;
   }
 
@@ -62,6 +64,7 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     // newCourses.replaceRange(index, index + 1, [course]);
     // state = state.copyWith(courses: newCourses);
     final int replaceAt = state.courses.indexWhere((e) => e.key == course.key);
+    Hive.box(coursesBoxKey).put(course.key.toString(), course.toJson());
     state.courses.replaceRange(replaceAt, replaceAt + 1, [course]);
   }
 
@@ -70,6 +73,7 @@ class CourseListViewModel extends StateNotifier<CourseScheduleRepository> {
     final List<Course> newCourses = List.from(courses);
     final int index = newCourses.indexWhere((e) => e.key == course.key);
     newCourses.replaceRange(index, index + 1, [course]);
+    Hive.box(coursesBoxKey).put(course.key.toString(), course.toJson());
     state = state.copyWith(courses: newCourses);
   }
 
