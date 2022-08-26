@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart' show Key, UniqueKey;
+import 'package:nanoid/nanoid.dart';
 
 import 'time_slot.dart';
 
@@ -22,7 +23,7 @@ class Course implements Comparable<Course> {
     this.crn,
     required this.days,
     this.placeholder = false,
-  }) : key = key ?? UniqueKey(); // Create unique key if none is given
+  }) : key = key ?? Key(nanoid()); // Create unique key if none is given
 
   /// Compares this to `other`
   ///
@@ -87,8 +88,13 @@ class Course implements Comparable<Course> {
   }
 
   factory Course.fromMap(Map<String, dynamic> map) {
+    // When reading a key from local storage, the string "[<'123abc'>]"
+    // becomes a ValueKey of [<'[<'123abc'>]'>]. This results in a course
+    // not being loaded with the same key it was saved with, leading to
+    // uncontrollable courses. Slicing out the extra brackets is a functional
+    // solution.
     return Course(
-      key: Key(map['key']),
+      key: Key(map['key'].substring(3, map['key'].length - 3)),
       time: TimeSlot.fromMap(map['time']),
       credits: map['credits']?.toInt() ?? 0,
       name: map['name'] ?? '',
