@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:schedyoule/views/home_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart' as path_provider;
 
 // TODO: Tips screen or something idk
 // TODO: Schedules get more fucked up the further down you scroll (Possibly fixed?)
-// TODO: Save courses on exit
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final dir = await path_provider.getApplicationDocumentsDirectory();
+  Hive.init(dir.path);
+  await Hive.openBox('courses');
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
