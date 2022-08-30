@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:simple_animations/simple_animations.dart';
 
 import '../../constants/constants.dart';
 import '../../providers/providers.dart';
@@ -51,8 +50,6 @@ class GradientButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final double width = MediaQuery.of(context).size.width;
-
     return Stack(
       alignment: AlignmentDirectional.bottomStart,
       fit: StackFit.loose,
@@ -64,20 +61,6 @@ class GradientButton extends StatelessWidget {
                 backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
             onPressed: () {},
             child: const Text(courseListViewGenerateButtonGenerating),
-          ),
-        ),
-        MirrorAnimation<double>(
-          builder: (context, child, value) {
-            return Transform.translate(offset: Offset(value, 0), child: child);
-          },
-          tween: Tween(begin: -width * generateAnimationOffset, end: width),
-          duration: const Duration(milliseconds: generateAnimationDuration),
-          curve: Curves.easeInOut,
-          child: FractionallySizedBox(
-            widthFactor: generateAnimationSize,
-            child: Container(
-              color: Colors.white.withOpacity(generateAnimationOpacity),
-            ),
           ),
         ),
       ],
