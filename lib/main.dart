@@ -4,9 +4,6 @@ import 'package:hive/hive.dart';
 import 'package:schedyoule/views/home_view.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 
-// TODO: Tips screen or something idk
-// TODO: Schedules get more fucked up the further down you scroll (Possibly fixed?)
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final dir = await path_provider.getApplicationDocumentsDirectory();
